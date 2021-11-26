@@ -26,10 +26,15 @@ RUN /bin/echo -e "\n\
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get update \
     && apt-get upgrade -y \
-    && apt-get -y --no-install-recommends install sudo vim tzdata less \
+    && apt-get -y --no-install-recommends install sudo vim tzdata less locales \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+# locale settings
+RUN sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=ja_JP.UTF-8
 
 # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
 RUN groupadd --gid $USER_GID $USERNAME \
