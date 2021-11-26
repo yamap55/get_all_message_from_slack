@@ -70,7 +70,7 @@ def get_user_name(user_id: str) -> str:
 
 
 def post_message(
-    channel_id: str, text: str, thread_ts: Optional[str] = None, mention_users: List[str] = []
+    channel_id: str, text: str, thread_ts: Optional[str] = None, mention_users: List[str] = None
 ) -> Dict[str, Any]:
     """
     指定されたチャンネルにメッセージをポスト
@@ -94,6 +94,7 @@ def post_message(
         ポストしたメッセージのデータ
     """
     # https://api.slack.com/methods/chat.postMessage
+    mention_users = [] if mention_users is None else mention_users
     mentions = [f"<@{u}>" for u in mention_users]
     mentions_postfix = "\n" if len(mentions) > 1 else ""
     send_message = " ".join(mentions) + mentions_postfix + text
