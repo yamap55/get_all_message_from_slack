@@ -1,7 +1,7 @@
 """main"""
 from logging import config
 
-from hoge.huga import Huga
+from get_all_message_from_slack.huga import Huga
 
 config.fileConfig("logging.conf", disable_existing_loggers=False)
 
