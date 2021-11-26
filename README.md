@@ -32,17 +32,13 @@ SLACK_TOKEN=xxxxxxxx
 
 ## SlackAPI で必要な権限
 
-TODO: 下記は適当なので変更が必要
-
 ```
 channels:history
-channels:read
-chat:write
-chat:write.public
 groups:history
+im:history
+mpim:history
+channels:read
 groups:read
 im:read
-mpim:history
 mpim:read
-users:read
 ```
