@@ -5,15 +5,19 @@ on: [push]
 jobs:
   pytest:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
     steps:
+      - name: locale setup
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install locales
+          sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen
+          sudo locale-gen
+          sudo update-locale LANG=ja_JP.UTF-8
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pip
