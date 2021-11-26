@@ -12,13 +12,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-class Huga:
-    """
-    Huga class
-    """
-
-    def piyo(self) -> str:
-        """return piyo"""
-        logger.info("piyo")
-        return "piyo"
