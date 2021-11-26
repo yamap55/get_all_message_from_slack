@@ -1,6 +1,6 @@
 version: "3"
 services:
-  python_repository_simple:
+  get_all_message_from_slack:
     build:
       context: .
       dockerfile: .devcontainer/Dockerfile
@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/project
       - ${USERPROFILE-~}/.ssh:/home/vscode/.ssh
-    image: python_repository_simple-image
-    container_name: python_repository_simple-container
+    image: get_all_message_from_slack-image
+    container_name: get_all_message_from_slack-container
     tty: true
     env_file: .env # shellスクリプト内でも環境変数として使用するため
