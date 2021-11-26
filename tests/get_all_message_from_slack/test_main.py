@@ -1,4 +1,4 @@
-from get_all_message_from_slack.huga import Huga
+from get_all_message_from_slack.main import Huga
 
 
 class TestHuga:
