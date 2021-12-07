@@ -176,13 +176,11 @@ class TestGetChannelMessage:
                 "messages": messages,
             }
         )
-        actual = get_channel_message("CHANNEL_ID", float(1.23), float(4.56))
+        actual = get_channel_message("CHANNEL_ID")
         expected = messages
 
         assert actual == expected
-        self.mock_method.assert_called_once_with(
-            channel="CHANNEL_ID", oldest=float(1.23), latest=float(4.56)
-        )
+        self.mock_method.assert_called_once_with(channel="CHANNEL_ID", limit=1000)
 
     def test_has_more(self):
         messages_1 = [
@@ -215,16 +213,14 @@ class TestGetChannelMessage:
             ),
         ]
 
-        actual = get_channel_message("CHANNEL_ID", float(1.23), float(4.56))
+        actual = get_channel_message("CHANNEL_ID")
         expected = messages_1 + messages_2
 
         assert actual == expected
         self.mock_method.assert_has_calls(
             [
-                mock.call(channel="CHANNEL_ID", oldest=float(1.23), latest=float(4.56)),
-                mock.call(
-                    channel="CHANNEL_ID", oldest=float(1.23), latest=float(4.56), cursor="abcdefg"
-                ),
+                mock.call(channel="CHANNEL_ID", limit=1000),
+                mock.call(channel="CHANNEL_ID", cursor="abcdefg", limit=1000),
             ]
         )
 
