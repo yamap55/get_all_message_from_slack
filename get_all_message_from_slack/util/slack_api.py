@@ -6,6 +6,33 @@ from get_all_message_from_slack.settings import client
 from slack_sdk.web.slack_response import SlackResponse
 
 
+def get_all_public_channels() -> list[dict[str, Any]]:
+    """
+    全てのpublicチャンネル情報を取得する
+
+    NOTE: 全てのメッセージをメモリに乗せる事に注意
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        チャンネル情報
+        フォーマットは下記のchannels以下を参照
+        https://api.slack.com/methods/conversations.list#responses
+    """
+    result: list[dict[str, Any]] = []
+    option = {"type:": "public_channel"}
+    next_cursor = "DUMMY"  # whileを1度は回すためダミー値を設定
+    while next_cursor:
+        response = client.conversations_list(**option).data
+        result += response["channels"]
+        # チャンネルが多い場合は1度で全てを取得できない
+        # 尚、メッセージ取得系と異なり「has_more」属性は持っていない
+        next_cursor = response["response_metadata"]["next_cursor"]
+        option["cursor"] = next_cursor
+        sleep(1)  # need to wait 1 sec before next call due to rate limits
+    return result
+
+
 def get_channel_id(name: str) -> str:
     """
     指定されたチャンネルのチャンネルIDを取得
