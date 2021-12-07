@@ -43,4 +43,5 @@ channels:read
 groups:read
 im:read
 mpim:read
+users:read
 ```
