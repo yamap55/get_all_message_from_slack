@@ -32,6 +32,8 @@ SLACK_TOKEN=xxxxxxxx
 
 ## SlackAPI で必要な権限
 
+※Bot Token だと各チャンネルに Join する必要があるため User Token を使用します
+
 ```
 channels:history
 groups:history
