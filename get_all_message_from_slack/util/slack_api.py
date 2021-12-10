@@ -19,18 +19,9 @@ def get_all_public_channels() -> list[dict[str, Any]]:
         フォーマットは下記のchannels以下を参照
         https://api.slack.com/methods/conversations.list#responses
     """
-    result: list[dict[str, Any]] = []
-    option = {"type:": "public_channel"}
-    next_cursor = "DUMMY"  # whileを1度は回すためダミー値を設定
-    while next_cursor:
-        response = client.conversations_list(**option).data
-        result += response["channels"]
-        # チャンネルが多い場合は1度で全てを取得できない
-        # 尚、メッセージ取得系と異なり「has_more」属性は持っていない
-        next_cursor = response["response_metadata"]["next_cursor"]
-        option["cursor"] = next_cursor
-        sleep(1)  # need to wait 1 sec before next call due to rate limits
-    return result
+    return __get_all_data_by_iterating(
+        client.conversations_list, {"type:": "public_channel"}, "channels", False
+    )
 
 
 def get_channel_id(name: str) -> str:
@@ -130,20 +121,6 @@ def post_message(
     return res.data
 
 
-def __get_all_message_by_iterating(
-    func: Callable[..., SlackResponse], option: Dict[str, Any]
-) -> List[Dict[str, Any]]:
-    """繰り返し処理ですべてのメッセージを取得"""
-    response = func(**option).data
-    messages_all = response["messages"]
-    while response["has_more"]:
-        sleep(1)  # need to wait 1 sec before next call due to rate limits
-        response = func(**option, cursor=response["response_metadata"]["next_cursor"]).data
-        messages = response["messages"]
-        messages_all = messages_all + messages
-    return messages_all
-
-
 def get_channel_message(channel_id: str) -> List[Dict[str, Any]]:
     """
     指定されたチャンネルのメッセージを取得
@@ -185,3 +162,36 @@ def get_replies(channel_id: str, message: Dict[str, Any]) -> List[Dict[str, Any]
         return []
     option = {"channel": channel_id, "ts": message["thread_ts"]}
     return __get_all_message_by_iterating(client.conversations_replies, option)
+
+
+def __get_all_message_by_iterating(
+    func: Callable[..., SlackResponse], option: Dict[str, Any]
+) -> List[Dict[str, Any]]:
+    """繰り返し処理ですべてのメッセージを取得"""
+    return __get_all_data_by_iterating(func, option, "messages", True)
+
+
+def __get_all_data_by_iterating(
+    func: Callable[..., SlackResponse],
+    option: Dict[str, Any],
+    data_key: str,
+    has_more_attribute: bool,
+) -> List[Dict[str, Any]]:
+    """繰り返し処理ですべてのデータを取得"""
+
+    def has_more(r):
+        return bool(
+            response["has_more"]
+            if has_more_attribute
+            else response["response_metadata"]["next_cursor"]
+        )
+
+    response = func(**option).data
+    data_all = response[data_key]
+
+    while has_more(response):
+        sleep(1)  # need to wait 1 sec before next call due to rate limits
+        response = func(**option, cursor=response["response_metadata"]["next_cursor"]).data
+        data = response[data_key]
+        data_all = data_all + data
+    return data_all
