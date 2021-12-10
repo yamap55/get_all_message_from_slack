@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 from get_all_message_from_slack.util.slack_api import (
     get_all_public_channels,
+    get_all_users,
     get_channel_id,
     get_channel_message,
     get_replies,
@@ -373,5 +374,64 @@ class TestGetAllPublicChannels:
             [
                 mock.call(**{"type:": "public_channel"}),
                 mock.call(**{"type:": "public_channel", "cursor": "NEXT_CURSOR"}),
+            ]
+        )
+
+
+class TestGetAllUsers:
+    @pytest.fixture(autouse=True)
+    def setUp(self):
+
+        with mock.patch(
+            "get_all_message_from_slack.util.slack_api.client.users_list",
+        ) as mock_method:
+            self.mock_method = mock_method
+            yield
+
+    def test_nomal_case(self):
+        self.mock_method.return_value = create_return_object(
+            {
+                "members": [
+                    {"name": "USER_NAME1", "id": "USER_ID1"},
+                    {"name": "USER_NAME2", "id": "USER_ID2"},
+                ],
+                "response_metadata": {"next_cursor": ""},
+            }
+        )
+        actual = get_all_users()
+        expected = [
+            {"name": "USER_NAME1", "id": "USER_ID1"},
+            {"name": "USER_NAME2", "id": "USER_ID2"},
+        ]
+
+        assert actual == expected
+        self.mock_method.assert_called_once_with()
+
+    def test_next_cursor_true(self):
+        self.mock_method.side_effect = [
+            create_return_object(
+                {
+                    "members": [{"name": "USER_NAME1", "id": "USER_ID1"}],
+                    "response_metadata": {"next_cursor": "NEXT_CURSOR"},
+                }
+            ),
+            create_return_object(
+                {
+                    "members": [{"name": "USER_NAME2", "id": "USER_ID2"}],
+                    "response_metadata": {"next_cursor": ""},
+                }
+            ),
+        ]
+        actual = get_all_users()
+        expected = [
+            {"name": "USER_NAME1", "id": "USER_ID1"},
+            {"name": "USER_NAME2", "id": "USER_ID2"},
+        ]
+
+        assert actual == expected
+        self.mock_method.assert_has_calls(
+            [
+                mock.call(),
+                mock.call(cursor="NEXT_CURSOR"),
             ]
         )
