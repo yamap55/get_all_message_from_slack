@@ -45,3 +45,7 @@ im:read
 mpim:read
 users:read
 ```
+
+## 実行
+
+`python -m get_all_message_from_slack.main`
