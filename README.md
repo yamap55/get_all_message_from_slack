@@ -18,7 +18,7 @@
 ### 環境変数設定
 
 ```
-SLACK_TOKEN=xxxxxxxx
+SLACK_TOKEN=xoxp-xxxxxxxx
 ```
 
 ### 開発手順
@@ -49,3 +49,19 @@ users:read
 ## 実行
 
 `python -m get_all_message_from_slack.main`
+
+## Slack 設定
+
+- アプリ作成
+  - Your Apps 画面 → Create New App → From scratch
+  - https://api.slack.com/apps
+- 権限設定
+  - サイドメニュー → OAuth & Permissions
+  - Scopes -> **User Token Scopes**
+  - 上記「SlackAPI で必要な権限」を追加
+- インストール
+  - サイドメニュー → Basic Infomation → Install your app
+- Token 取得
+  - サイドメニュー → OAuth & Permissions → OAuth Tokens for Your Workspace
+  - **User OAuth Token** をコピー
+    - `xoxp-` からはじまる Token
