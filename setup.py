@@ -8,8 +8,6 @@ setup(
     install_requires=["slack-sdk"],
     # コマンドが実行されたときのエントリーポイント.
     entry_points={
-        "console_scripts": [
-            "get_all_message_from_slack=get_all_message_from_slack.main:entry_point"
-        ]
+        "console_scripts": ["get_all_message_from_slack=get_all_message_from_slack.main:main"]
     },
 )
