@@ -50,6 +50,19 @@ users:read
 
 `python -m get_all_message_from_slack.main`
 
+## pip install して実行
+
+- `pip install git+https://github.com/yamap55/get_all_message_from_slack`
+
+```python
+from get_all_message_from_slack import main
+os.environ["SLACK_TOKEN"] = "xoxp-xxxxxxxx"
+import os
+main()
+```
+
+※ `SLACK_TOKEN` をコード内で設定する場合のサンプル
+
 ## Slack 設定
 
 - アプリ作成
