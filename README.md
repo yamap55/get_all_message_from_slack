@@ -55,9 +55,9 @@ users:read
 - `pip install git+https://github.com/yamap55/get_all_message_from_slack`
 
 ```python
-from get_all_message_from_slack import main
-os.environ["SLACK_TOKEN"] = "xoxp-xxxxxxxx"
 import os
+os.environ["SLACK_TOKEN"] = "xoxp-xxxxxxxx"
+from get_all_message_from_slack.main import main
 main()
 ```
 
