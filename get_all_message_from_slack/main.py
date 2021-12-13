@@ -44,7 +44,7 @@ def _create_base_path() -> Path:
     now = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_path = Path(f"./work/{now}")
     logger.info(f"save base path: {base_path}")
-    base_path.mkdir()
+    base_path.mkdir(parents=True)
     return base_path
 
 
