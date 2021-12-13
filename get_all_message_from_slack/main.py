@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import get_all_message_from_slack.settings as settings
+from get_all_message_from_slack.logging_conf import LOGGING_CONFIG
 from get_all_message_from_slack.util.slack_api import (
     get_all_public_channels,
     get_all_users,
@@ -13,7 +14,7 @@ from get_all_message_from_slack.util.slack_api import (
     get_replies,
 )
 
-config.fileConfig("logging.conf", disable_existing_loggers=False)
+config.dictConfig(LOGGING_CONFIG)  # type: ignore
 logger = getLogger(__name__)
 client = settings.client
 
