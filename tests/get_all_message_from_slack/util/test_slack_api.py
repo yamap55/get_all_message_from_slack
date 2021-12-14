@@ -45,7 +45,9 @@ class TestGetUserName:
     def test_not_exists_user_id(self):
         # APIにアクセスしたくないため、モックで例外を投げている
         # ユニットテストとしては意味がないが、仕様記載の意味で記載しておく
-        self.mock_method.side_effect = SlackApiError("a", "b")
+        slack_response = mock.MagicMock()
+        slack_response.status_code = 200
+        self.mock_method.side_effect = SlackApiError("message", slack_response)
 
         with pytest.raises(SlackApiError):
             get_user_name("NOT_EXISTS_USER_ID")

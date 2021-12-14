@@ -3,6 +3,7 @@ from time import sleep
 from typing import Any, Callable, Dict, List, Optional
 
 from get_all_message_from_slack.settings import client
+from slack_sdk.errors import SlackApiError
 from slack_sdk.web.slack_response import SlackResponse
 
 
@@ -62,7 +63,7 @@ def get_channel_id(name: str) -> str:
         option = {}
         next_cursor = "DUMMY"  # whileを1度は回すためダミー値を設定
         while next_cursor:
-            response = client.conversations_list(**option).data
+            response = __execute_api(client.conversations_list, **option).data
             target_channnels = [
                 channel["id"] for channel in response["channels"] if channel["name"] == name
             ]
@@ -98,7 +99,7 @@ def get_user_name(user_id: str) -> str:
         存在しないユーザIDの場合
     """
     # https://api.slack.com/methods/users.info
-    return client.users_info(user=user_id)["user"]["real_name"]
+    return __execute_api(client.users_info, user=user_id)["user"]["real_name"]
 
 
 def post_message(
@@ -131,7 +132,9 @@ def post_message(
     mentions_postfix = "\n" if len(mentions) > 1 else ""
     send_message = " ".join(mentions) + mentions_postfix + text
 
-    res = client.chat_postMessage(channel=channel_id, text=send_message, thread_ts=thread_ts)
+    res = __execute_api(
+        client.chat_postMessage, channel=channel_id, text=send_message, thread_ts=thread_ts
+    )
     return res.data
 
 
@@ -200,12 +203,45 @@ def __get_all_data_by_iterating(
             else response["response_metadata"]["next_cursor"]
         )
 
-    response = func(**option).data
+    response = __execute_api(func, **option).data
     data_all = response[data_key]
 
     while has_more(response):
         sleep(1)  # need to wait 1 sec before next call due to rate limits
-        response = func(**option, cursor=response["response_metadata"]["next_cursor"]).data
+        response = __execute_api(
+            func, **option, cursor=response["response_metadata"]["next_cursor"]
+        ).data
         data = response[data_key]
         data_all = data_all + data
     return data_all
+
+
+def __execute_api(func: Callable[..., SlackResponse], **option) -> SlackResponse:
+    """
+    APIを実行する
+
+    ※API制限に引っかかった場合にリトライを行う
+
+    Parameters
+    ----------
+    func : Callable[..., SlackResponse]
+        実行するAPI（の関数）
+    option : Dict[str, Any]
+        APIに渡されるOption
+
+    Returns
+    -------
+    SlackResponse
+        APIのレスポンス
+    """
+    try:
+        return func(**option)
+    except SlackApiError as e:
+        res = e.response
+        if res.status_code != 429:
+            # not ratelimited
+            raise e
+        # https://api.slack.com/lang/ja-jp/rate-limit
+        # 念のため1秒多く待機
+        sleep(res.headers["retry-after"] + 1)
+        return __execute_api(func, **option)
