@@ -6,13 +6,13 @@ from get_all_message_from_slack.settings import client
 from slack_sdk.web.slack_response import SlackResponse
 
 
-def get_all_users() -> list[dict[str, Any]]:
+def get_all_users() -> List[Dict[str, Any]]:
     """
     全てのユーザ情報を取得する
 
     Returns
     -------
-    list[dict[str, Any]]
+    List[Dict[str, Any]]
         ユーザ情報
         フォーマットは下記のchannels以下を参照
         https://api.slack.com/methods/users.list#responses
@@ -20,7 +20,7 @@ def get_all_users() -> list[dict[str, Any]]:
     return __get_all_data_by_iterating(client.users_list, {}, "members", False)
 
 
-def get_all_public_channels() -> list[dict[str, Any]]:
+def get_all_public_channels() -> List[Dict[str, Any]]:
     """
     全てのpublicチャンネル情報を取得する
 
@@ -28,7 +28,7 @@ def get_all_public_channels() -> list[dict[str, Any]]:
 
     Returns
     -------
-    list[dict[str, Any]]
+    List[Dict[str, Any]]
         チャンネル情報
         フォーマットは下記のchannels以下を参照
         https://api.slack.com/methods/conversations.list#responses

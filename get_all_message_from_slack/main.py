@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from logging import config, getLogger
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
 
 import get_all_message_from_slack.settings as settings
 from get_all_message_from_slack.logging_conf import LOGGING_CONFIG
@@ -48,7 +48,7 @@ def _create_base_path() -> Path:
     return base_path
 
 
-def _get_channels(base_path: Path) -> list[dict[str, Any]]:
+def _get_channels(base_path: Path) -> List[Dict[str, Any]]:
     """
     全てのpublicチャンネル情報を取得
 
@@ -59,7 +59,7 @@ def _get_channels(base_path: Path) -> list[dict[str, Any]]:
 
     Returns
     -------
-    list[dict[str, Any]]
+    List[Dict[str, Any]]
         全てのpublicチャンネル情報
     """
     logger.info("get all public channels.")
@@ -70,7 +70,7 @@ def _get_channels(base_path: Path) -> list[dict[str, Any]]:
     return channels
 
 
-def _get_users(base_path: Path) -> list[dict[str, Any]]:
+def _get_users(base_path: Path) -> List[Dict[str, Any]]:
     """
     全てのユーザ情報を取得
 
@@ -81,7 +81,7 @@ def _get_users(base_path: Path) -> list[dict[str, Any]]:
 
     Returns
     -------
-    list[dict[str, Any]]
+    List[Dict[str, Any]]
         全てのユーザ情報
     """
     logger.info("get all users.")
@@ -123,7 +123,7 @@ def _get_channel_message(base_path: Path, channel_id: str, channel_name: str) ->
 
 
 def _get_replies(
-    base_path: Path, message: dict[str, Any], channel_id: str, channel_info: str
+    base_path: Path, message: Dict[str, Any], channel_id: str, channel_info: str
 ) -> None:
     """
     リプライメッセージを取得
@@ -132,7 +132,7 @@ def _get_replies(
     ----------
     base_path : Path
         出力先のBaseとなるPath
-    message : dict[str, Any]
+    message : Dict[str, Any]
         メッセージ情報
     channel_id : str
         チャンネルID
