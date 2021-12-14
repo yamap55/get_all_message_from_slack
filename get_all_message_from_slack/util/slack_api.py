@@ -243,5 +243,5 @@ def __execute_api(func: Callable[..., SlackResponse], **option) -> SlackResponse
             raise e
         # https://api.slack.com/lang/ja-jp/rate-limit
         # 念のため1秒多く待機
-        sleep(res.headers["retry-after"] + 1)
+        sleep(int(res.headers["retry-after"]) + 1)
         return __execute_api(func, **option)
