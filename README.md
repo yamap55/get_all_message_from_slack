@@ -4,7 +4,8 @@
 
 ## 環境詳細
 
-- Python : 3.9
+- Python : 3.8
+  - 開発時の DatabricksRuntime の最新 LTS が 3.8 であるため
 
 ### 事前準備
 
