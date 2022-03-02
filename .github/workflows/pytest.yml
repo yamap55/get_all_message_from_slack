@@ -13,7 +13,7 @@ jobs:
           sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen
           sudo locale-gen
           sudo update-locale LANG=ja_JP.UTF-8
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
