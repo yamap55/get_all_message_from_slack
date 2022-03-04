@@ -63,7 +63,7 @@ def get_channel_id(name: str) -> str:
         option = {}
         next_cursor = "DUMMY"  # whileを1度は回すためダミー値を設定
         while next_cursor:
-            response = __execute_api(client.conversations_list, **option).data
+            response: Dict[str, Any] = __execute_api(client.conversations_list, **option).data  # type: ignore # noqa: E501
             target_channnels = [
                 channel["id"] for channel in response["channels"] if channel["name"] == name
             ]
@@ -99,11 +99,14 @@ def get_user_name(user_id: str) -> str:
         存在しないユーザIDの場合
     """
     # https://api.slack.com/methods/users.info
-    return __execute_api(client.users_info, user=user_id)["user"]["real_name"]
+    return __execute_api(client.users_info, user=user_id)["user"]["real_name"]  # type: ignore
 
 
 def post_message(
-    channel_id: str, text: str, thread_ts: Optional[str] = None, mention_users: List[str] = None
+    channel_id: str,
+    text: str,
+    thread_ts: Optional[str] = None,
+    mention_users: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """
     指定されたチャンネルにメッセージをポスト
@@ -135,7 +138,7 @@ def post_message(
     res = __execute_api(
         client.chat_postMessage, channel=channel_id, text=send_message, thread_ts=thread_ts
     )
-    return res.data
+    return res.data  # type: ignore
 
 
 def get_channel_message(channel_id: str) -> List[Dict[str, Any]]:
@@ -203,13 +206,13 @@ def __get_all_data_by_iterating(
             else response["response_metadata"]["next_cursor"]
         )
 
-    response = __execute_api(func, **option).data
+    response: Dict[str, Any] = __execute_api(func, **option).data  # type: ignore
     data_all = response[data_key]
 
     while has_more(response):
         sleep(1)  # need to wait 1 sec before next call due to rate limits
         response = __execute_api(
-            func, **option, cursor=response["response_metadata"]["next_cursor"]
+            func, **option, cursor=response["response_metadata"]["next_cursor"]  # type: ignore
         ).data
         data = response[data_key]
         data_all = data_all + data
