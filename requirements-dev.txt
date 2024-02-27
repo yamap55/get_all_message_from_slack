@@ -10,7 +10,7 @@ pytest==8.0.2
 pytest-cov==4.1.0
 
 # notebook
-ipykernel==6.29.2
+ipykernel==6.29.3
 
 # build
 build==1.0.3
