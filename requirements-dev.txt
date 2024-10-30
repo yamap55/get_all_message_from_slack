@@ -7,7 +7,7 @@ flake8-bugbear==24.8.19
 
 # test
 pytest==8.3.3
-pytest-cov==5.0.0
+pytest-cov==6.0.0
 
 # notebook
 ipykernel==6.29.5
