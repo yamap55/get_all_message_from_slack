@@ -13,4 +13,4 @@ pytest-cov==7.1.0
 ipykernel==7.1.0
 
 # build
-build==1.4.1
+build==1.4.2
