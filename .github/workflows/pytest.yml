@@ -15,7 +15,7 @@ jobs:
           sudo update-locale LANG=ja_JP.UTF-8
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: 3.8
       - uses: actions/cache@v6
