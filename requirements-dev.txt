@@ -6,7 +6,7 @@ flake8-quotes==3.4.0
 flake8-bugbear==26.9.30
 
 # test
-pytest==9.1.1
+pytest==9.2.0
 pytest-cov==7.1.0
 
 # notebook
